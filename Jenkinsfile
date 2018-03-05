@@ -6,12 +6,9 @@ def version = "latest"
 def region = "eu-west-2"
 
 def buildAndPush(String imageName) {
-    withCredentials([
-            string(credentialsId: 'aws_ecr_password', variable: 'awsEcrPassword'),
-            string(credentialsId: 'aws_account_number', variable: 'awsAccountNumber')
-    ]) {
-        stage("Build/push ${imageName} image") {
-            container('docker') {
+    stage("Build/push ${imageName} image") {
+        container('docker') {
+            withCredentials([string(credentialsId: 'aws_account_number', variable: 'awsAccountNumber')]) {
                 def imageTag = "${awsAccountNumber}.dkr.ecr.${region}.amazonaws.com/${imageName}:${version}"
                 sh "docker build -t ${imageTag} ${imageName}/."
 
@@ -35,20 +32,14 @@ podTemplate(label: label, containers: [
                 hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
         ]) {
     node(label) {
-
-        checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false,
+        checkout([$class    : 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false,
                   extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/daviddenton/alpha-global']]])
 
-        withCredentials([
-                string(credentialsId: 'aws_ecr_password', variable: 'awsEcrPassword'),
-                string(credentialsId: 'aws_account_number', variable: 'awsAccountNumber')
-        ]) {
-            parallel {
-                buildAndPush('alpha-global-app')
-                buildAndPush('alpha-global-config')
-                stage('Build/push helm chart') {
-                    sh "echo building helm chart"
-                }
+        withCredentials([string(credentialsId: 'aws_account_number', variable: 'awsAccountNumber')]) {
+            buildAndPush('alpha-global-app')
+            buildAndPush('alpha-global-config')
+            stage('Build/push helm chart') {
+                sh "echo building helm chart"
             }
         }
     }
