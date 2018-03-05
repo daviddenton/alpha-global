@@ -5,7 +5,7 @@ def label = "worker-${UUID.randomUUID().toString()}"
 def version = "latest"
 def region = "eu-west-2"
 
-def buildAndPush(String imageName) {
+def buildAndPush(String imageName, String version, String region) {
     stage("Build/push ${imageName} image") {
         container('docker') {
             withCredentials([string(credentialsId: 'aws_account_number', variable: 'awsAccountNumber')]) {
@@ -36,8 +36,8 @@ podTemplate(label: label, containers: [
                   extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/daviddenton/alpha-global']]])
 
         withCredentials([string(credentialsId: 'aws_account_number', variable: 'awsAccountNumber')]) {
-            buildAndPush('alpha-global-app')
-            buildAndPush('alpha-global-config')
+            buildAndPush('alpha-global-app', version, region)
+            buildAndPush('alpha-global-config', version, region)
             stage('Build/push helm chart') {
                 sh "echo building helm chart"
             }
