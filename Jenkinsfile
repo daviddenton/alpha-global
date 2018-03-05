@@ -44,7 +44,7 @@ podTemplate(label: label, containers: [
                 string(credentialsId: 'aws_account_number', variable: 'awsAccountNumber')
         ]) {
             parallel {
-                buildAndPush('alpha-global')
+                buildAndPush('alpha-global-app')
                 buildAndPush('alpha-global-config')
                 stage('Build/push helm chart') {
                     sh "echo building helm chart"
