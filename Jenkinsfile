@@ -35,21 +35,12 @@ podTemplate(label: label, containers: [
                 hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
         ]) {
     node(label) {
-
-        checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false,
+        checkout([$class    : 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false,
                   extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/daviddenton/alpha-global']]])
-
-        withCredentials([
-                string(credentialsId: 'aws_ecr_password', variable: 'awsEcrPassword'),
-                string(credentialsId: 'aws_account_number', variable: 'awsAccountNumber')
-        ]) {
-            parallel {
-                buildAndPush('alpha-global-app')
-                buildAndPush('alpha-global-config')
-                stage('Build/push helm chart') {
-                    sh "echo building helm chart"
-                }
-            }
+        buildAndPush('alpha-global-app')
+        buildAndPush('alpha-global-config')
+        stage('Build/push helm chart') {
+            sh "echo building helm chart"
         }
     }
 }
