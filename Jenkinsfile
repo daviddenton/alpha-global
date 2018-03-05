@@ -3,7 +3,7 @@
 def label = "worker-${UUID.randomUUID().toString()}"
 
 def version = "latest"
-def imageName = "dsp"
+def imageName = "alpha-global"
 def region = "eu-west-2"
 
 podTemplate(label: label, containers: [
@@ -25,16 +25,22 @@ podTemplate(label: label, containers: [
                 string(credentialsId: 'aws_ecr_password', variable: 'awsEcrPassword'),
                 string(credentialsId: 'aws_account_number', variable: 'awsAccountNumber')
         ]) {
-            stage('Build image and push to registry') {
-                container('docker') {
-                    def imageTag = "${awsAccountNumber}.dkr.ecr.${region}.amazonaws.com/${imageName}:${version}"
-                    sh "docker build -t ${imageTag} ."
+            parallel {
+                stage('Build/push global image') {
+                    container('docker') {
+                        def imageTag = "${awsAccountNumber}.dkr.ecr.${region}.amazonaws.com/${imageName}:${version}"
 
-                    withAWS(credentials:'aws_credentials') {
-                        sh ecrLogin()
-                        sh "docker push ${imageTag}"
+                        withAWS(credentials:'aws_credentials') {
+                            sh ecrLogin()
+                            sh "docker build -t ${imageTag} ."
+                            sh "docker push ${imageTag}"
+                        }
                     }
                 }
+                stage('Build/push helm chart') {
+                    sh "echo building helm chart"
+                }
+
             }
         }
     }
