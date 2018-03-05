@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
         - name: alpha-global-app
-          image: {{.Values.imageRegistry}}/alpha/alpha-global-app:{{.Values.dockerTag}}
+          image: {{.Values.imageRegistry}}/alpha-global-app:{{.Values.dockerTag}}
           imagePullPolicy: {{.Values.pullPolicy}}
 ---
 apiVersion: v1
@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: vendor-db
-          image: {{.Values.imageRegistry}}/vendor/db:{{.Values.dockerTag}}
+          image: {{.Values.imageRegistry}}/vendor-db:{{.Values.dockerTag}}
           imagePullPolicy: {{.Values.pullPolicy}}
 ---
 apiVersion: v1
@@ -31,9 +31,9 @@ spec:
     spec:
       initContainers:
         - name: alpha-market-config
-          image: {{.Values.imageRegistry}}/alpha/alpha-market-config:{{.Values.dockerTag}}
+          image: {{.Values.imageRegistry}}/alpha-market-config:{{.Values.dockerTag}}
           imagePullPolicy: {{.Values.pullPolicy}}
       containers:
         - name: vendor-configurer
-          image: {{.Values.imageRegistry}}/vendor/configurer:{{.Values.dockerTag}}
+          image: {{.Values.imageRegistry}}/vendor-configurer:{{.Values.dockerTag}}
           imagePullPolicy: {{.Values.pullPolicy}}
