@@ -28,6 +28,7 @@ def publishHelm() {
                 sh "apk update"
                 sh "apk add git"
                 sh "git clone https://alphauser:${githubToken}@github.com/daviddenton/alpha-charts"
+                sh "helm init"
                 sh "helm package alpha-global-helm"
                 sh "mv alpha-global-helm/*.tgz alpha-charts"
                 sh "helm repo index alpha-charts"
