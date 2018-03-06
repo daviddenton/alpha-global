@@ -9,6 +9,11 @@ spec:
         - name: alpha-global-app
           image: {{.Values.imageRegistry}}/alpha-global-app:{{.Values.dockerTag}}
           imagePullPolicy: {{.Values.pullPolicy}}
+      ports:
+        - name: http
+          port: 8000
+          protocol: TCP
+          targetPort: http
 ---
 apiVersion: v1
 kind: Service
@@ -21,6 +26,11 @@ spec:
         - name: vendor-db
           image: {{.Values.imageRegistry}}/vendor-db:{{.Values.dockerTag}}
           imagePullPolicy: {{.Values.pullPolicy}}
+      ports:
+        - name: http
+          port: 9000
+          protocol: TCP
+          targetPort: http
 ---
 apiVersion: v1
 kind: Service
@@ -37,3 +47,8 @@ spec:
         - name: vendor-configurer
           image: {{.Values.imageRegistry}}/vendor-configurer:{{.Values.dockerTag}}
           imagePullPolicy: {{.Values.pullPolicy}}
+      ports:
+        - name: http
+          port: 10000
+          protocol: TCP
+          targetPort: http
