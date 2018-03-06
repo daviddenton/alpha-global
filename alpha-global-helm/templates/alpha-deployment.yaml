@@ -6,12 +6,10 @@ metadata:
       type: app
       app: alpha
 spec:
-  template:
-    spec:
-      containers:
-        - name: alpha-global-app
-          image: {{.Values.imageRegistry}}/alpha-global-app:{{.Values.dockerTag}}
-          imagePullPolicy: {{.Values.pullPolicy}}
+  containers:
+    - name: alpha-global-app
+      image: {{.Values.imageRegistry}}/alpha-global-app:{{.Values.dockerTag}}
+      imagePullPolicy: {{.Values.pullPolicy}}
   ports:
     - name: http
       port: 8000
@@ -26,12 +24,10 @@ metadata:
       type: db
       app: alpha
 spec:
-  template:
-    spec:
-      containers:
-        - name: vendor-db
-          image: {{.Values.imageRegistry}}/vendor-db:{{.Values.dockerTag}}
-          imagePullPolicy: {{.Values.pullPolicy}}
+  containers:
+    - name: vendor-db
+      image: {{.Values.imageRegistry}}/vendor-db:{{.Values.dockerTag}}
+      imagePullPolicy: {{.Values.pullPolicy}}
   ports:
     - name: http
       port: 9000
@@ -46,16 +42,14 @@ metadata:
       type: configurer
       app: alpha
 spec:
-  template:
-    spec:
-      initContainers:
-        - name: alpha-market-config
-          image: {{.Values.imageRegistry}}/alpha-market-config:{{.Values.dockerTag}}
-          imagePullPolicy: {{.Values.pullPolicy}}
-      containers:
-        - name: vendor-configurer
-          image: {{.Values.imageRegistry}}/vendor-configurer:{{.Values.dockerTag}}
-          imagePullPolicy: {{.Values.pullPolicy}}
+  initContainers:
+    - name: alpha-market-config
+      image: {{.Values.imageRegistry}}/alpha-market-config:{{.Values.dockerTag}}
+      imagePullPolicy: {{.Values.pullPolicy}}
+  containers:
+    - name: vendor-configurer
+      image: {{.Values.imageRegistry}}/vendor-configurer:{{.Values.dockerTag}}
+      imagePullPolicy: {{.Values.pullPolicy}}
   ports:
     - name: http
       port: 10000
