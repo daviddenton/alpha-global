@@ -1,7 +1,10 @@
 apiVersion: v1
-kind: Service
+kind: Pod
 metadata:
   name: alpha-global-app
+  labels:
+      type: app
+      app: alpha
 spec:
   template:
     spec:
@@ -16,9 +19,12 @@ spec:
       targetPort: 80
 ---
 apiVersion: v1
-kind: Service
+kind: Pod
 metadata:
   name: vendor-db
+  labels:
+      type: db
+      app: alpha
 spec:
   template:
     spec:
@@ -33,9 +39,12 @@ spec:
       targetPort: 80
 ---
 apiVersion: v1
-kind: Service
+kind: Pod
 metadata:
   name: vendor-configurer
+  labels:
+      type: configurer
+      app: alpha
 spec:
   template:
     spec:
