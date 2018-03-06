@@ -21,6 +21,22 @@ def buildAndPush(String imageName, String version, String region) {
     }
 }
 
+def publishHelm() {
+    stage('Build/push helm chart') {
+        container('helm') {
+            withCredentials([string(credentialsId: 'github_token', variable: 'githubToken')]) {
+                sh "apk update"
+                sh "apk add git"
+                sh "git clone https://alphauser:${githubToken}@github.com/daviddenton/alpha-charts"
+                sh "helm package alpha-global/alpha-global-helm"
+                sh "mv alpha-global/alpha-global-helm/*.tgz alpha-charts"
+                sh "helm repo index alpha-charts"
+                sh "cd alpha-charts && git add . && git commit -am 'Auto Chart install' && git push"
+            }
+        }
+    }
+}
+
 podTemplate(label: label, containers: [
         containerTemplate(name: 'gradle', image: 'gradle:4.5.1-jdk9', command: 'cat', ttyEnabled: true),
         containerTemplate(name: 'docker', image: 'docker', command: 'cat', ttyEnabled: true),
@@ -38,9 +54,7 @@ podTemplate(label: label, containers: [
         withCredentials([string(credentialsId: 'aws_account_number', variable: 'awsAccountNumber')]) {
             buildAndPush('alpha-global-app', version, region)
             buildAndPush('alpha-global-config', version, region)
-            stage('Build/push helm chart') {
-                sh "echo building helm chart"
-            }
+            publishHelm()
         }
     }
 }
