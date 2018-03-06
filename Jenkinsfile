@@ -30,7 +30,7 @@ def publishHelm() {
                 sh "git clone https://alphauser:${githubToken}@github.com/daviddenton/alpha-charts"
                 sh "helm init"
                 sh "helm package alpha-global-helm"
-                sh "mv alpha-global-helm/*.tgz alpha-charts"
+                sh "mv *.tgz alpha-charts"
                 sh "helm repo index alpha-charts"
                 sh "cd alpha-charts && git add . && git commit -am 'Auto Chart install' && git push"
             }
