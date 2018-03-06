@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: alpha-global-app
 spec:
- template:
+  template:
     spec:
       containers:
         - name: alpha-global-app
@@ -15,7 +15,7 @@ kind: Service
 metadata:
   name: vendor-db
 spec:
- template:
+  template:
     spec:
       containers:
         - name: vendor-db
@@ -27,7 +27,7 @@ kind: Service
 metadata:
   name: vendor-configurer
 spec:
- template:
+  template:
     spec:
       initContainers:
         - name: alpha-market-config
