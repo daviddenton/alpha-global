@@ -25,10 +25,10 @@ def publishHelm() {
     stage('Build/push helm chart') {
         container('helm') {
             withCredentials([string(credentialsId: 'github_token', variable: 'githubToken')]) {
-                sh "GIT_COMMITTER_NAME=auto"
-                sh "GIT_COMMITTER_EMAIL=man@moon.com"
                 sh "apk update"
                 sh "apk add git"
+                sh "git config --global user.email 'man@moon.com'"
+                sh "git config --global user.name Auto"
                 sh "git clone https://alphauser:${githubToken}@github.com/daviddenton/alpha-charts"
                 sh "helm init"
                 sh "helm package alpha-global-helm"
